@@ -1,0 +1,28 @@
+Extensions && Extensions.Extend(
+    /**
+     * @function routesConfigExt
+     * @extends routesConfig
+     * @memberof App
+     * @description Estensione del controller routesConfig
+     */
+    function routesConfigExt($stateProvider, $locationProvider, $urlRouterProvider, helper){
+        var p = this;
+
+        // helpers disponibili:
+        // helper.basepath -> app/views/
+        // helper.extensionspath -> app/Extensions/
+        // helper.custompath -> app/Custom/
+
+        $stateProvider
+        .state('app.§EntityModuleLowerCase§_§entityLowerCase§list', {
+            url: '/§EntityModuleLowerCase§_§entityLowerCase§list',
+            title: 'Modalità di assegnazione',
+            templateUrl: helper.extensionspath('§EntityModule§/§DataContract§/views/§EntityModuleLowerCase§_§entityLowerCase§list.html?' + p)
+        })
+        .state('app.§EntityModuleLowerCase§_§entityLowerCase§edit', {
+            url: '/§EntityModuleLowerCase§_§entityLowerCase§edit',
+            title: 'Inserimento dati',
+            templateUrl: helper.extensionspath('§EntityModule§/§DataContract§/views/§EntityModuleLowerCase§_§entityLowerCase§edit.html?' + p)
+        });
+    }
+);

@@ -1,0 +1,20 @@
+<h3>
+    {{::currTitle}}
+</h3>
+<div ng-controller="§DataContract§ListController">
+    <form name="filterform" novalidate>
+        <div class="panel panel-default">
+            <div class="panel-footer">
+                <hx-filter-commands on-new="doNew()" on-filter="doFilter()" on-reset="doReset()" hx-settings="filterCommands"></hx-filter-commands>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Risultati
+            </div>
+            <div class="panel-body">
+                <§entityHtmlListDirectiveTag§ hx-filtri="filtri" hx-refresh="view.refresh" hx-fetchstatus="view.fetchStatus" hx-on-command="doCommand(button)"></§entityHtmlListDirectiveTag§>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,165 @@
+//#region §DataContract§ListController
+(function () {
+    'use strict';
+
+    // naming convention
+    // costituito dalla concatenazione di quattro elementi:
+    // 1) prefisso che indica il modulo
+    // 2) nome del tipo di dato che si sta trattando
+    // 3) tipo di pagina su cui lavora (può essere List oppure Edit)
+    // 4) il testo Controller (naming convention suggerita dal team di angular)
+    angular.module('app.hextra').controller('§DataContract§ListController', §DataContract§ListController);
+
+    §DataContract§ListController.$inject = ['$scope', '$filter', '$modal', 'Hextra', 'm§EntityModule§'];
+    function §DataContract§ListController($scope, $filter, $modal, Hextra, m§EntityModule§) {
+        // controller
+        // il nome del controller da chiamare per gestire le chiamate del tipo di dato che si sta visualizzando
+        var controller = '§EntitySvc§/Controller';
+        // il nome del tipo di dato trattato. questa var viene usata per costruire la action e per risalire al nome delle properties da usare per le richieste/risposte json con il server
+        var entity = '§entity§';
+        $scope.entity = entity;
+
+        // $scope.ss -> elenca tutte le informazioni sull'azienda cui appartiene l'utente loggato. Oltre alle informazioni sull'azienda, contiene un bel po' di properties (quasi sempre di tipo bool) che mi consentono di stabilire come si deve comportare il controller o la view in base al progetto. E' uno dei modi che abbiamo per influire il comportamento della view e del controller
+        $scope.ss = Hextra.getSVC().getSettings();
+
+        // Iniezione dei prependors.
+        // Puoi spostare il prependor in base alla necessità (nell'ambito del controller).
+        Extensions && Extensions.AnyPrependor("§DataContract§ListController") && Extensions.ApplyPrependors("§DataContract§ListController", this, arguments);
+
+        // gestione dei filtri
+        // ogni pagina di elenco potenzialmente deve permettere all'utente di filtrare i risultati
+        // per ogni tipo di dato, quindi, devo fare una chiamata al server per ottenere i valori predefiniti dei filtri
+        // la chiamata al server mi consente, oltre all'inizializzazione dei valori, di sapere se un certo filtro è supportato o meno. Se è supportato, la risposta conterrà la property (eventualmente a null), mentre in caso contrario il campo desiderato nel filtro restituito dal server sarà undefined
+        // la chiamata filtriGet incapsula la logica per cui, se sono già stato in precedenza su questa pagina, mi restituisce il valore dei filtri che l'utente aveva impostato prima del cambio pagina. Diversamente, effettua la richiesta al server.
+        Hextra.stack.filtriGet(entity, m§EntityModule§.§entity§FiltriNew()).then(function (f) {
+            $scope.filtri = f === undefined ? {} : f;	// se il risultato è undefined significa che non ci sono filtri. In tal caso si assegna un oggetto vuoto per consentire all list di caricare.
+        });
+        // $scope.filterCommands
+        // impostazioni che determinano il comportamento della direttiva che visualizza i pulsanti in cima alla pagina
+        // lasciando l'oggetto vuoto viene adottato il comportamento standard (pulsanti applica filtri, reset e nuovo visualizzati)
+        // per poter gestire in maniera fine lo stato di questi pulsanti, si può utilizzare la tecnica di definire dei flag lato server, che nel caso fossero assenti fannno sì che la direttiva si comporti in modo standard
+        $scope.filterCommands = {
+            showNew: $scope.ss[entity + 'ShowNew']
+        };
+        // gestione della direttiva
+        // le due properties seguenti mi consentono il dialogo con la direttiva che renderizza una datatable
+        // $scope.view.refresh è una property che mi consente di segnalare alla direttiva di fare un refresh dei dati dal server. Basta metterla a true; non è nemmeno necessario ripristinare il valore a false perché ci pensa la direttiva
+        // $scope.fetchStatus viene impostato dalla direttiva, diventa true quando inizia una richiesta dati al server, diventa false nel momento in cui la datatable è stata renderizzata: la uso nel seguito per gestire lo spinner sulla toolbar
+        $scope.view = {
+            refresh: false,
+            fetchStatus: false
+        }
+        // gestione dello spinner
+        // la $watch che segue mi permette di abilitare e disabilitare lo spinner in base 
+        $scope.$watch('view.fetchStatus', function (value) {
+            $scope.filterCommands.showSpinner = value === true; // in questo modo non devo verificare che value sia undefined or null
+        });
+        // click sul pulsante Nuovo del pannello dei filtri, chiamo la New sul server e faccio redirect alla pagina di dettaglio
+        $scope.doNew = function () {
+            // chiamo l'opportuno metodo sul servizio.
+            // tutti i metodi di tipo xxxxGet hanno una duplice funzione, se manca l'argomento della funzione (come in questo caso) in realtà si comportano come se fosse una xxxNew.
+            // la promise, risolta restituisce l'oggetto desiderato, non è quindi necessario sapere qual è il nome della property della response che contiene quello che mi serve!
+            m§EntityModule§.§entity§Get().then(function (r) {
+                // pushAndGo non fa altro che prendere il mio oggetto e metterlo nel session storage in modo che la view successiva lo possa recuperare
+                // interessante: lo determinazione dello state di destinazione è incapsulato nella chiamata, basta adottare la naming convention per cui lo stato della pagine di elenco finisca con 'list', e il rispettivo stato di destinazione si chiami nello stesso modo a con 'edit' al posto di 'list'
+                Hextra.stack.pushAndGo(entity, r);
+            });
+        }
+        // callback dalla direttiva
+        // button è un oggetto che DEVE contenere la property action (string) che determina cosa è stato cliccato nella direttiva
+        // normalmente l'unico comando è 'edit' che corrisponde alla pressione del pulsante modifica su una riga della tabella
+        // in questo caso in button c'è anche una property 'id' valorizzata con l'id dell'oggetto contenuto nella riga della tabella
+        $scope.doCommand = function (button) {
+            if (button.command === 'edit') {
+                // stesse considerazioni fatte in precedenza, da notare il parametro nella xxxGet
+                m§EntityModule§.§entity§Get(button.id).then(function (r) {
+                    Hextra.stack.pushAndGo(entity, r);
+                });
+            }
+        }
+        // click sul pulsante Applica Filtri, memorizzo i filtri impostati e forzo il refresh della tabella
+        // la pushFiltri mi consente di salvare il session storage i filtri impostati
+        // mettendo a true la view.refresh, forzo la direttiva a fare una nuova richiesta al server
+        $scope.doFilter = function () {
+            Hextra.stack.pushFiltri(entity, $scope.filtri);
+            $scope.view.refresh = true;
+        }
+        // click sul pulsante Reset, richedo una nuova fetch dal server dei filtri e forzo refresh della tabella
+        $scope.doReset = function () {
+            // come prima, ma alla filtriGet aggiungo un terzo parametro (true) che in sostanza significa: non mi interessa se trovi il filtro in session storage, fai comunque la chiamata al server e restituiscimi quello
+            Hextra.stack.filtriGet(entity, m§EntityModule§.§entity§FiltriNew(), true).then(function (r) {
+                // ok, ho reimpostato i filtri
+                $scope.filtri = r === undefined ? {} : r;
+                // chiamando la doFilter memorizzo i nuovi filtri in session storage e forzo la richiesta dati al server
+                $scope.doFilter();
+            });
+        }
+
+        // Estensione standard controller list.
+        Extensions && Extensions.ApplyDefaults("listControllers", $scope, m§EntityModule§, Hextra);
+        // Gestore estensioni del controller automatica.
+        Extensions && Extensions.Any("§DataContract§ListController") && Extensions.ApplyExtensions("§DataContract§ListController", this, arguments);
+    }
+})();
+//#endregion
+//#region §DataContract§EditController
+(function () {
+    'use strict';
+
+    angular
+        .module('app.hextra')
+        .controller('§DataContract§EditController', §DataContract§EditController);
+
+    // $inject necessari:
+    // $scope, Hextra, mXXX (il modulo che gestisce il tipo di entity che sto trattando)
+    §DataContract§EditController.$inject = ['$scope', '$state', '$filter', '$modal', 'Hextra', 'mCore', 'm§EntityModule§'];
+    function §DataContract§EditController($scope, $state, $filter, $modal, Hextra, mCore, m§EntityModule§) {
+        // $scope.ss -> contiene le impostazione dell'azienda, e eventuali flag personalizzati che mi porto dietro dal server
+        $scope.ss = Hextra.getSVC().getSettings();
+        $scope.view = {};
+        // controller e entity, come per il controller della pagina list
+        var controller = '§EntitySvc§/Controller';
+        var entity = '§entity§';
+		
+		// hxCommandSettings personalizza la visualizzazione della toolbar in cima alla pagina
+        // il comportamento di default è: salva abilitato, chiudi abilitato, tutti gli altri pulsanti disabilitati
+        $scope.hxCommandSettings = {};
+		
+        // ==== Set del datarow ====
+        $scope.datarow = Hextra.stack.popDatarow(entity);
+        if ($scope.datarow.id != 0) {
+            $scope.hxCommandSettings.showDelete = $scope.datarow.id > 0;
+        }
+		
+
+        $scope.save = function () {
+            // notare il trace dei log prima e dopo la chiamata al servizio
+            // in realtà tracciare datarow e entityID è probabilmente inutile in quanto il log viene scritto dalla SVCRequest.Request
+            Hextra.log.debug('§entity§Save -> datarow:', $scope.datarow);
+            m§EntityModule§.§entity§Save($scope.datarow, $scope.hxCommandSettings).then(function (r) {
+                Hextra.log.debug('§entity§Save -> entityID = ' + r);
+                $scope.close();
+            });
+        }
+
+        $scope.close = function () {
+            Hextra.stack.goBack(); // interessante, non devo pensare al nome dello stato
+        }
+
+        $scope.delete = function () {
+            // il secondo parametro lo uso per abilitare/disabilitare lo spinner, buttare un occhio alla servizio
+            // da documentare bene nello snippet per i servizi (da fare)
+            m§EntityModule§.§entity§Delete($scope.datarow, $scope.hxCommandSettings).then(function () {
+                $scope.close();
+            });
+        }
+		
+		// Estensione standard controller edit.
+        Extensions && Extensions.ApplyDefaults("editControllers", $scope, m§EntityModule§, Hextra);
+		// Gestore estensioni del controller automatica.
+        Extensions && Extensions.Any("§DataContract§EditController") && Extensions.ApplyExtensions("§DataContract§EditController", this, arguments);
+    }
+})();
+//#endregion
+
+

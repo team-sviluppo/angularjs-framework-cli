@@ -1,0 +1,14 @@
+<h3>
+    {{::currTitle}}
+</h3>
+<div class="row" ng-controller="§DataContract§EditController">
+    <form name="editForm" novalidate>
+        <hx-commands on-save="save()" on-close="close()" on-delete="delete()" on-print="print()" hx-form="editForm" hx-settings="hxCommandSettings" save-enabled="view.saveEnabled"></hx-commands>
+        <accordion close-others="false">
+			<accordion-group is-open="false" heading="debug" ng-if="app.debugMode">
+				<pre>{{datarow | json}}</pre>
+			</accordion-group>
+		</accordion>
+        <hx-commands on-save="save()" on-close="close()" on-delete="delete()" on-print="print()" hx-form="editForm" hx-settings="hxCommandSettings" save-enabled="view.saveEnabled"></hx-commands>
+    </form>
+</div>

@@ -1,0 +1,217 @@
+/**
+ * @member m§EntityModule§Ext
+ * @memberOf §EntityModule§
+ * @name m§EntityModule§Ext
+ * @description
+ * @description Estensione modulo m§EntityModule§ per il package m§EntityModule§Ext.
+ */
+Extensions && Extensions.Extend(
+    /**
+     * @function m§EntityModule§Ext
+     * @extends m§EntityModule§
+     * @memberof m§EntityModule§ExtModule
+     * @description Estensione del servizio m§EntityModule§
+     */
+    function m§EntityModule§Ext($q, svc, mUtils) {
+        var _this = this;
+        var controller = this.controller;
+
+        //#region §entity§
+        /**
+        * @function §entity§List
+        * @memberof m§EntityModule§
+        * @name §searchNeedle§List
+        * @param {Object} filtri - filtri da applicare (oppure `null`, o undefined, a piacere).
+        * @description
+        * Restituisce la lista delle richieste di §context§, eventualmente in base ai filtri passati..
+        * <b>NON effettua caching.</b>
+        * @example
+        * // restituisce array di oggetti.
+        * m§EntityModule§.§entity§List(null).then(function(res){
+        *  // res è un array di oggetti.
+        * });
+        * @returns {Promise<Object[]>} Promise che risolve un array di oggetti, ogni oggetto contiene i dati di un datarow..
+        */
+        this.§entity§List = function(filtri) {
+            return mUtils.listWithFiltri(controller, '§entity§List', '§entity§List', filtri);
+        }
+
+        /**
+        * @function §entity§Get
+        * @memberof m§EntityModule§
+        * @name §searchNeedle§Get
+        * @param {number} id - id da ricercare per una get normale, non passare il parametro per una riga nuova.
+        * @description
+        * Restituisce il datarow con id `id`, altrimenti restituisce un <b>nuovo datarow</b>.
+        * @example
+        * // restituisce un datarow di una nuova richiesta
+        * m§EntityModule§.§entity§Get().then(function(datarow){
+        *  // datarow è un nuovo datarow.
+        * });
+        * @example
+        * // restituisce un datarow di una richiesta esistente.
+        * var id = 184;
+        * m§EntityModule§.§entity§Get(id).then(function(datarow){
+        *  // datarow è il datarow con id 184.
+        * });
+        * @returns {Promise<Object>} Promise che risolve un nuovo datarow o uno esistente.
+        */
+        this.§entity§Get = function(id) {
+            return mUtils.getDatarow(controller, '§entity§', id);
+        }
+
+        /**
+        * @function §entity§Save
+        * @memberof m§EntityModule§
+        * @name §searchNeedle§Save
+        * @param {Object} datarow - Datarow dell'elemento da salvare (che sia nuovo o un edit non importa).
+        * @param {Object} [spinObj] - Reference all'oggetto relativo allo spinner, che deve presentare una proprietà `showSpinner` (che nasconde / mostra lo spinner durante il progresso).
+        * @description
+        * Salva il datarow dell'elemento (di un edit / di una new) e restituisce l'ID dell'elemento inserito.
+        * @example
+        * $scope.datarow = {}; // <-- datarow della view.
+        * $scope.spinnerObject = {
+        *  showSpinner: false;
+        * };   // <-- oggetto dell'hx-spinner
+        * 
+        * m§EntityModule§.§entity§Save(datarow).then(function(res){
+        *  if (res) {
+        *      // salvataggio riuscito, res è l'ID della riga inserita.
+        *  }
+        *  else {
+        *      // salvataggio non riuscito.
+        *  }
+        * });
+        * @returns {Promise<number>} Promise che risolve l'id della riga inserita / modificata.
+        */
+        this.§entity§Save = function (datarow, spinObj) {
+            return mUtils.saveDatarow(controller, "§entity§", datarow, spinObj);
+        }
+
+        /**
+        * @function §entity§Delete
+        * @memberof m§EntityModule§
+        * @name §searchNeedle§Delete
+        * @param {Object} datarow - Datarow dell'elemento da rimuovere.
+        * @param {Object} [spinObj] - Reference all'oggetto relativo allo spinner, che deve presentare una proprietà `showSpinner` (che nasconde / mostra lo spinner durante il progresso).
+        * @description
+        * Rimuove il datarow dell'elemento (di un edit / di una new) e restituisce l'ID dell'elemento inserito.
+        * @example
+        * $scope.datarow = {}; // <-- datarow della view.
+        * $scope.spinnerObject = {
+        *  showSpinner: false;
+        * };   // <-- oggetto dell'hx-spinner
+        * 
+        * m§EntityModule§.§entity§Delete(datarow).then(function(res){
+        *  if (res) {
+        *      // Rimozione riuscita.
+        *  }
+        * });
+        * @returns {Promise<boolean>} Promise che risolve true se l'elemento è stato rimosso, false se si sono verificati errori.
+        */
+        this.§entity§Delete = function (datarow, spinObj) {
+            return mUtils.deleteDatarow(controller, "§entity§", datarow, spinObj);
+        }
+
+        /**
+        * @function §entity§Print
+        * @memberof m§EntityModule§
+        * @name §searchNeedle§Print
+        * @param {Object} datarow - Datarow dell'elemento da stampare.
+        * @param {Object} [spinObj] - Reference all'oggetto relativo allo spinner, che deve presentare una proprietà `showSpinner` (che nasconde / mostra lo spinner durante il progresso).
+        * @description
+        * Rimuove il datarow dell'elemento (di un edit / di una new) e restituisce l'ID dell'elemento inserito.
+        * @example
+        * $scope.datarow = {}; // <-- datarow della view.
+        * $scope.spinnerObject = {
+        *  showSpinner: false;
+        * };   // <-- oggetto dell'hx-spinner
+        * 
+        * m§EntityModule§.§entity§Print(datarow).then(function(res){
+        *  if (res) {
+        *      var fileUrl = res.fileUrl; // <-- url del file da scaricare.
+        *  }
+        * });
+        * @returns {Promise<Object>} Promise che risolve un oggetto contentente i dati di stampa. l'URL del file da scaricare è `res.fileUrl` (vedi esempio)
+        */
+        this.§entity§Print = function (datarow, spinObj) {
+            return mUtils.printDatarow(controller, "§entity§", datarow, spinObj);
+        }
+
+        /**
+        * @function §entity§FiltriNew
+        * @memberof m§EntityModule§
+        * @name §searchNeedle§FiltriNew
+        * @description
+        * Restituisce i filtri standard per la ricerca di fatture.
+        * @example
+        * // restituisce un datarow di una nuova richiesta rating
+        * m§EntityModule§.§searchNeedle§FiltriNew().then(function(filtri){
+        *  // filtri contiene i filtri standard.
+        * });
+        * @returns {Promise<Object>} Promise che risolve i filtri relativi a questo contesto.
+        */
+        this.§entity§FiltriNew = function () {
+            return mUtils.getFiltri(controller, "§entity§"); // Applicare un terzo parametro se la key della risposta da acquisire è diversa da §entity§FiltriNew.
+        }
+
+        /**
+        * @function §entity§Clone
+        * @memberof m§EntityModule§
+        * @name §entity§Clone
+        * @param {number} id - id da ricercare per una get normale, non passare il parametro per una riga nuova.
+        * @description
+        * Restituisce un clone del datarow avente l'id passato come argomento.
+        * @example
+        * // restituisce un datarow di una richiesta esistente.
+        * var id = 184;
+        * m§EntityModule§.§entity§Clone(id).then(function(datarow){
+        *  // datarow è un clone del datarow con id 184.
+        * });
+        * @returns {Promise<Object>} Promise che risolve un nuovo datarow o uno esistente.
+        */
+        this.§entity§Clone = function(id) {
+            return mUtils.cloneDatarow(controller, '§entity§', id);
+        }
+
+        /**
+        * @function §entity§Mail
+        * @memberof m§EntityModule§
+        * @name §entity§Mail
+        * @param {Object} datarow - Datarow dell'elemento da inviare via mail.
+        * @param {Object} [spinObj] - Reference all'oggetto relativo allo spinner, che deve presentare una proprietà `showSpinner` (che nasconde / mostra lo spinner durante il progresso).
+        * @description
+        * Rimuove il datarow dell'elemento (di un edit / di una new) e restituisce l'ID dell'elemento inserito.
+        * @example
+        * $scope.datarow = {}; // <-- datarow della view.
+        * $scope.spinnerObject = {
+        *  showSpinner: false;
+        * };   // <-- oggetto dell'hx-spinner
+        * m§EntityModule§.§entity§Mail(datarow).then(function(res){
+        *  // res è un booleano che stabilisce se l'esito è positivo o meno.
+        * });
+        * @returns {Promise<Boolean>} Promise che risolve true se la mail è stata inviata, false se non è stata inviata.
+        */
+        this.§entity§Mail = function(datarow, spinObj) {
+            return mUtils.mailDatarow(controller, '§entity§', datarow, spinObj);
+        }
+
+        /**
+        * @function §entity§Export
+        * @memberof m§EntityModule§
+        * @name §entity§Export
+        * @param {Object} filtri - Filtri da applicare.
+        * @description
+        * Effettua l'export della view attuale in base ai filtri passati.
+        * @example
+        * m§EntityModule§.§entity§Export(scope.filtri).then(function(res){
+        *     // Res è l'url del file
+        * });
+        * @returns {Promise<string>} Promise contenente l'url del file da scaricare.
+        */
+        this.§entity§Export = function(filtri) {
+            return mUtils.entityExport(controller, '§entity§', filtri);
+        }
+        //#endregion
+    }
+);

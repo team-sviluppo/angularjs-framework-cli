@@ -1,0 +1,99 @@
+//#region §entityDirectivePrefix§list
+(function () {
+    angular.module('app.hextra')
+        .directive('§entityDirectivePrefix§list', §entityDirectivePrefix§list)
+        .controller('§entityDirectivePrefix§listController', §entityDirectivePrefix§listController);
+    /**
+     * @member §entityDirectivePrefix§list
+     * @memberOf Doc
+     * @name RepartiAzienda
+     * @description
+     * Directive RepartiAzienda.
+     * Crea una `select chosen` oppure una `datatable`. Nel caso della chosen, consente la selezione di un elemento. Nel caso di una datatable, mostra la tabella con le azioni standard.
+     */
+    §entityDirectivePrefix§list.$inject = ['Hextra', 'mUtils'];
+    function §entityDirectivePrefix§list(Hextra, mUtils) {
+        var d = {
+            link: link,
+            templateUrl: "/app/views/core/abstract/core-generic-list.html",
+            scope: mUtils.listSharedLogic().getDefaultLogicScope(),
+            restrict: 'E',
+            controller: '§entityDirectivePrefix§listController'
+        };
+        return d;
+
+        function link(scope, element, attrs) {
+            if (attrs.name === undefined || attrs.name === '') scope.name = "§entityLowercase§"; else scope.name = attrs.name;
+            if (attrs.hxLabel === undefined || attrs.hxLabel === '') scope.hxLabel = "§entityDropdownLabel§"; else scope.hxLabel = attrs.hxLabel;
+        }
+    }
+
+    §entityDirectivePrefix§listController.$inject = ['Hextra', 'DTColumnBuilder', 'DTOptionsBuilder', '$q', '$compile', '$scope', '$modal', 'm§EntityModule§', 'mUtils'];
+    function §entityDirectivePrefix§listController(Hextra, DTColumnBuilder, DTOptionsBuilder, $q, $compile, scope, $modal, m§EntityModule§, mUtils) {
+        // Get settings
+        this.settings = Hextra.getSVC().getSettings();
+        // Configurazione modale.
+        // NON obbligatoria.
+        // Se non si vuole configurare, fare modalConfig = undefined.
+        this.modalConfig = undefined;
+        this.modalInjectors = undefined;
+        // Referenza per la chiamata "list"
+        this.listReference = m§EntityModule§.§entity§List;
+        // Referenza per capire qual'è la key da mandare per i filtri.
+        // Se non c'è nessuna key, impostare undefined.
+        this.listFilterKey = "";
+        // Referenza per la chiamata "get"
+        this.getReference = m§EntityModule§.§entity§Get;
+        // Referenza per stabilire come renderizzare la datatable
+
+        // TODO compilare manualmente.
+        this.dtColumns = [
+            DTColumnBuilder.newColumn('descrizione').withTitle('Descrizione')
+        ];
+
+        // Gestione variabili "optionals"
+        this.optionals = undefined;
+        //this.optionals = {};
+        //this.optionals.additionalsListModifiers = [];
+        // Scommenta questa sezione per applicare una modifica (o una serie di modifiche) al callback della list.
+        // Serve solo per la chosen.
+        /*
+        this.optionals.additionalsListModifiers.push({
+            elaborate: function(rows) {
+                var q = $q.defer();
+                mParco.parcoNoleggioMezziNonDisponibili().then(function(r){
+                    angular.forEach(rows, function(riga){
+                        var res = r.indexOf(riga.id) > -1;
+                        riga.disponibile = !res;
+                    });
+                    q.resolve(rows);
+                });
+                return q.promise;
+            }
+        });
+		// Esempio derivazione.
+        this.optionals.derivateCandidates = [
+            {
+                letters:        'C',
+                btnClass:       'btn-warning',
+                tooltip:        'trasforma in Contratto',
+                controller:     'Document.svc/Controller',
+                modulo:         'doc',
+                action:         'documentiDeriva',
+                destinationType:'contratti'
+            }
+        ];
+		// Esempio injectBefore.
+		// Injectbefore inietta prima della chosen, solo per chosen, no chosen multiple.
+		this.optionals.injectBefore = '<p ng-if="scope.qualcosa">ciao</p>';
+		*/
+
+        // Estensione dei controllers astratti.
+        Extensions && Extensions.Any('§entityDirectivePrefix§listController') && Extensions.ApplyExtensions('§entityDirectivePrefix§listController', this, arguments);
+        // Funzioni specifiche per questo controller riguardanti il rendering della datatable.
+        // Inizione della logica.
+        var LOGIC_DEFAULT_ARGUMENTS = [Hextra, $modal, this.modalConfig, this.listReference, this.listFilterKey, this.dtColumns, $compile, DTOptionsBuilder, this.getReference, this.modalInjectors, this.optionals];
+        mUtils.listSharedLogic().applyLogicTo(scope, LOGIC_DEFAULT_ARGUMENTS);
+    }
+})();
+//#endregion
