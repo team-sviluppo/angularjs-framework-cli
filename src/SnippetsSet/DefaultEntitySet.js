@@ -18,11 +18,11 @@ module.exports = {
         },
         {
             snippetPath:        "./snippets/EntityFullSnippet/entityListView.snippet",
-            resRelativePath:    "§DataContract§/views/§entity§list.html"
+            resRelativePath:    "§DataContract§/views/§entityLowerCase§list.html"
         },
         {
             snippetPath:        "./snippets/EntityFullSnippet/entityEditView.snippet",
-            resRelativePath:    "§DataContract§/views/§entity§edit.html"
+            resRelativePath:    "§DataContract§/views/§entityLowerCase§edit.html"
         },
     ],
     VariablesToFill: {
