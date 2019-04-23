@@ -1,3 +1,6 @@
+# Versione
+![](https://img.shields.io/badge/aprile_2019-1.0.1-red.svg)
+
 # Introduzione
 Questa repository contiene il sorgente per il client terminale del framework angularjs Hextra SRL - Team Sviluppo.
 
