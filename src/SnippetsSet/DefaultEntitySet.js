@@ -77,6 +77,9 @@ module.exports = {
             evaluate: function(toFill) {
                 return toFill['EntityModule'].value.toLowerCase();
             }
+        },
+        "ListPageTitle": {
+            hint: 'Titolo della pagina della list da mostrare in cima alla pagina.'
         }
     }
 }
