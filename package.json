@@ -1,6 +1,6 @@
 {
   "name": "hx-angularjs-framework-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "client framework angularjs hextra SRL",
   "main": "index.js",
   "scripts": {
