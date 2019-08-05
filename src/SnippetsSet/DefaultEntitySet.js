@@ -80,6 +80,9 @@ module.exports = {
         },
         "ListPageTitle": {
             hint: 'Titolo della pagina della list da mostrare in cima alla pagina.'
+        },
+        "SearchNeedle": {
+            hint: "Testo da utilizzare per cercare questo elemento."
         }
     }
 }
